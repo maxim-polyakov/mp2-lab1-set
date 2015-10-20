@@ -83,7 +83,7 @@ int TBitField::GetBit(const int n) const // получить значение б
 	return (pMem[GetMemIndex(n)] & GetMemMask(n)) != 0;
 
 	
-  return 0;
+
 }
 
 // битовые операции
@@ -128,17 +128,34 @@ int TBitField::operator==(const TBitField &bf) const // сравнение
 
 int TBitField::operator!=(const TBitField &bf) const // сравнение
 {
-  return 0;
+	if (*this == bf)
+		 {
+		return 0;
+		}
+	else
+		 {
+		return 1;
+		}
 }
 
 TBitField TBitField::operator|(const TBitField &bf) // операция "или"
 {
-	return *this;
+	int max_len;
+	if (BitLen >= bf.BitLen) { max_len = BitLen; }
+	else { max_len = bf.BitLen; } TBitField result(max_len); 
+	for (int i = 0; i < MemLen; i++) { result.pMem[i] = pMem[i]; };q
+	for (int i = 0; i < bf.MemLen; i++) { result.pMem[i] = result.pMem[i] | bf.pMem[i]; };
+	return result;
 }
 
 TBitField TBitField::operator&(const TBitField &bf) // операция "и"
 {
-	return *this;
+	int min_len; int max_len;
+	if (BitLen >= bf.BitLen) { min_len = bf.BitLen; max_len = BitLen; };
+	else { min_len = BitLen; max_len = bf.BitLen; };
+	TBitField result(max_len); 
+	for (int i = 0; i < min_len; i++) { if (GetBit(i) & bf.GetBit(i)) { result.SetBit(i); }; };
+	return result;
 }
 
 TBitField TBitField::operator~(void) // отрицание
