@@ -7,26 +7,26 @@
 
 #include "tset.h"
 
-TSet::TSet(int mp) : BitField(mp)
-{
+TSet::TSet(int mp) :BitField(mp){
 	MaxPower = mp;
 }
 
 // конструктор копирования
-TSet::TSet(const TSet &s) : BitField(-1)
+TSet::TSet(const TSet &s) : BitField(s.BitField)
 {
+	MaxPower = s.MaxPower;
 }
 
 // конструктор преобразования типа
 TSet::TSet(const TBitField &bf) : BitField(bf)
 {
-		MaxPower = bf.GetLength();
+	MaxPower = bf.GetLength();
 }
 
 TSet::operator TBitField()
 {
-	TBitField res(BitField);
-	return res;
+	TBitField result(BitField);
+	return result;
 }
 
 int TSet::GetMaxPower(void) const // получить макс. к-во эл-тов
@@ -70,74 +70,74 @@ int TSet::operator!=(const TSet &s) const // сравнение
 
 TSet TSet::operator+(const TSet &s) // объединение
 {
-	TSet res(BitField | s.BitField);
-	return res;
+	TSet result(BitField | s.BitField);
+	return result;
 }
 
 TSet TSet::operator+(const int Elem) // объединение с элементом
 {
 	if (Elem > BitField.GetLength())
-		 {
+	{
 		throw ("Elem > Length");
-		}
+	}
 	TBitField temp(MaxPower);
 	temp.SetBit(Elem);
-	TSet res(BitField | temp);
-	return res;
+	TSet result(BitField | temp);
+	return result;
 }
 
 TSet TSet::operator-(const int Elem) // разность с элементом
 {
 	TBitField temp(MaxPower);
 	temp.SetBit(Elem);
-	TSet res(BitField & temp);
-	return res;
+	TSet result(BitField & temp);
+	return result;
 }
 
 TSet TSet::operator*(const TSet &s) // пересечение
 {
-	TSet res(BitField & s.BitField);
-	return res;
+	TSet result(BitField & s.BitField);
+	return result;
 }
 
 TSet TSet::operator~(void) // дополнение
 {
-	TSet res(~BitField);
-	return res;
+	TSet result(~BitField);
+	return result;
 }
 
 // перегрузка ввода/вывода
 
-istream &operator>>(istream &istr, TSet &s) // ввод
+istream &operator>>(istream &istr, TSet &s) // ввод {s1,s2,s3}
 {
 	int i = 0;
 	char c;
 	do
-		 {
+	{
 		istr >> c;
-		} while (c != '{');
+	} while (c != '{');
+	do
+	{
+		istr >> i;
+		s.InsElem(i);
 		do
-			 {
-			istr >> i;
-			s.InsElem(i);
-			do
-				 {
-				istr >> c;
-				} while ((c = ',') && (c = '}'));
-				} while (c != '}');
-				return istr;
+		{
+			istr >> c;
+		} while ((c = ',') && (c = '}'));
+	} while (c != '}');
+	return istr;
 }
 
 ostream& operator<<(ostream &ostr, const TSet &s) // вывод
 {
 	ostr << '{';
 	for (int i = 0; i < s.GetMaxPower(); i++)
-		 {
+	{
 		if (s.IsMember(i) == 1)
-			 {
+		{
 			ostr << ' ' << i << ',';
-			}
 		}
+	}
 	ostr << '}';
 	return ostr;
 }
